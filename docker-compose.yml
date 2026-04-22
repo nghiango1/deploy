@@ -1,0 +1,10 @@
+version: '3'
+services:
+  interingo-service:
+    image: docker.io/nghiango1/interingo-service:8d53c45
+    container_name: interingo-service-container
+    ports:
+      - "8080:8080"  # Expose port 8080 on host
+    environment:
+      - GIN_MODE=release
+    restart: always  # Automatically restart the container on failure or reboot
