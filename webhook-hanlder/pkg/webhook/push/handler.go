@@ -29,7 +29,10 @@ func MainRefHandler(event Event) error {
 		return err
 	}
 	if isExist {
-		os.RemoveAll(DEFAULT_WORK_DIR)
+		if err := os.RemoveAll(DEFAULT_WORK_DIR); err != nil {
+			logger.Get().Error(fmt.Sprintln("Can't cleanup the workdir", DEFAULT_WORK_DIR, ",got: ", err.Error()))
+			return err
+		}
 	}
 
 	cmd := exec.Command("git", "clone", "--depth=1", "github.com/nghiango1/deploy", DEFAULT_WORK_DIR)
