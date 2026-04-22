@@ -32,11 +32,6 @@ func MainRefHandler(event Event) error {
 		os.RemoveAll(DEFAULT_WORK_DIR)
 	}
 
-	if err := os.Mkdir(DEFAULT_WORK_DIR, os.ModePerm); err != nil {
-		logger.Get().Error(fmt.Sprintln("Can't create to workdir", DEFAULT_WORK_DIR, ",got: ", err.Error()))
-		return err
-	}
-
 	cmd := exec.Command("git", "clone", "--depth=1", "github.com/nghiango1/deploy", DEFAULT_WORK_DIR)
 	err = cmd.Wait()
 	if err := os.Mkdir(DEFAULT_WORK_DIR, os.ModePerm); err != nil {
