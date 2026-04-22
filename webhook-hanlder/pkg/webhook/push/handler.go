@@ -36,6 +36,12 @@ func MainRefHandler(event Event) error {
 	}
 
 	cmd := exec.Command("git", "clone", "--depth=1", "github.com/nghiango1/deploy", DEFAULT_WORK_DIR)
+	logger.Get().Debug(fmt.Sprintln(cmd.String()))
+	err = cmd.Run()
+	if err := os.Mkdir(DEFAULT_WORK_DIR, os.ModePerm); err != nil {
+		logger.Get().Error(fmt.Sprintln("Can't pull latest code to workdir", DEFAULT_WORK_DIR, ",got: ", err.Error()))
+		return err
+	}
 	err = cmd.Wait()
 	if err := os.Mkdir(DEFAULT_WORK_DIR, os.ModePerm); err != nil {
 		logger.Get().Error(fmt.Sprintln("Can't pull latest code to workdir", DEFAULT_WORK_DIR, ",got: ", err.Error()))

@@ -19,7 +19,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	body, err := io.ReadAll(r.Body)
 	if err != nil {
-		logger.Get().Debug("Error reading request body:", err)
+		logger.Get().Error("Error reading request body:" + err.Error())
 		return
 	}
 	defer r.Body.Close()
@@ -28,7 +28,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	case "push":
 		var event push.Event
 		if err := json.Unmarshal(body, &event); err != nil {
-			logger.Get().Debug("Error parsing JSON:", err)
+			logger.Get().Error("Error parsing JSON:" + err.Error())
 			return
 		}
 		switch event.Ref {
@@ -42,6 +42,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			logger.Get().Warn(fmt.Sprintf("Unhandled ref: %s\n", event.Ref))
 		}
 	default:
-		logger.Get().Warn(fmt.Sprintf("Unhandled event: %s, %s\n", githubEvent))
+		logger.Get().Warn(fmt.Sprintf("Unhandled event: %s\n", githubEvent))
 	}
 }
