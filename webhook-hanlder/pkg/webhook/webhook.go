@@ -4,36 +4,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"log"
 	"net/http"
-)
 
-type PushEvent struct {
-	Ref     string `json:"ref"`
-	Before  string `json:"before"`
-	After   string `json:"after"`
-	Created bool   `json:"created"`
-	Deleted bool   `json:"deleted"`
-	Forced  bool   `json:"forced"`
-	Compare string `json:"compare"`
-	Commits []struct {
-		ID      string `json:"id"`
-		Message string `json:"message"`
-		Author  struct {
-			Name string `json:"name"`
-		} `json:"author"`
-	} `json:"commits"`
-	HeadCommit *struct {
-		ID      string `json:"id"`
-		Message string `json:"message"`
-	} `json:"head_commit"`
-	Repository struct {
-		FullName string `json:"full_name"`
-	} `json:"repository"`
-	Pusher struct {
-		Name string `json:"name"`
-	} `json:"pusher"`
-}
+	"github.com/nghiango1/deploy/webhook-handler/pkg/logger"
+	"github.com/nghiango1/deploy/webhook-handler/pkg/webhook/push"
+)
 
 func Handler(w http.ResponseWriter, r *http.Request) {
 	// Respond quickly with 202 Accepted
@@ -44,20 +19,29 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	body, err := io.ReadAll(r.Body)
 	if err != nil {
-		log.Println("Error reading request body:", err)
+		logger.Get().Debug("Error reading request body:", err)
 		return
 	}
 	defer r.Body.Close()
 
 	switch githubEvent {
 	case "push":
-		var event PushEvent
+		var event push.Event
 		if err := json.Unmarshal(body, &event); err != nil {
-			log.Println("Error parsing JSON:", err)
+			logger.Get().Debug("Error parsing JSON:", err)
 			return
 		}
-		fmt.Printf("Got push event: %s, %s\n", githubEvent, string(body))
+		switch event.Ref {
+		case "refs/heads/main":
+			logger.Get().Debug("Main ref push event\n")
+			push.MainRefHandler(event)
+		case "refs/heads/dev":
+			logger.Get().Debug("Dev ref push event\n")
+			push.DevRefHandler(event)
+		default:
+			logger.Get().Warn(fmt.Sprintf("Unhandled ref: %s\n", event.Ref))
+		}
 	default:
-		fmt.Printf("Unhandled event: %s, %s\n", githubEvent, string(body))
+		logger.Get().Warn(fmt.Sprintf("Unhandled event: %s, %s\n", githubEvent))
 	}
 }
