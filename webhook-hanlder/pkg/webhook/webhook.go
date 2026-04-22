@@ -56,7 +56,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			log.Println("Error parsing JSON:", err)
 			return
 		}
-		fmt.Printf("Unhandled event: %s, %s\n", githubEvent, string(body))
+		fmt.Printf("Got push event: %s, %s\n", githubEvent, string(body))
 	default:
 		fmt.Printf("Unhandled event: %s, %s\n", githubEvent, string(body))
 	}
