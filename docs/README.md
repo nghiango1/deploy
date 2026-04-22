@@ -11,5 +11,7 @@ npm install --global smee-client
 Then expose it to local
 
 ```sh
-smee --url WEBHOOK_PROXY_URL --path /webhook --port 3000
+export WEBHOOK_PROXY_URL=https://smee.io/<id>
+smee --url $WEBHOOK_PROXY_URL --path /webhook --port 3000
 ```
+
