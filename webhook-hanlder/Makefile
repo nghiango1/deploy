@@ -1,6 +1,3 @@
-.PHONY: all
- all: help
-
 GIT_TAG := $(shell git rev-parse --short HEAD)
 PACKAGE_NAME := webhook-handler
 SERVICE_IMAGE := docker.io/nghiango1/$(PACKAGE_NAME):$(GIT_TAG)
