@@ -1,7 +1,7 @@
 version: '3'
 services:
   interingo-service:
-    image: docker.io/nghiango1/interingo-service:49c5fd3
+    image: docker.io/nghiango1/interingo-service:b50037a
     container_name: interingo-service-container
     ports:
       - "8080:8080"  # Expose port 8080 on host
